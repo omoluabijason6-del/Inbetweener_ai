@@ -10,7 +10,7 @@ from core.character_dna import CharacterDNA
 def main():
     print("=" * 50)
     print("      INBETWEENER AI")
-    print("         Day 6")
+    print("         Day 7")
     print("=" * 50)
 
     # Create Kernel
@@ -38,6 +38,11 @@ def main():
         fps=24
     )
 
+    # Create First Scene
+    opening_scene = project_agent.create_scene(
+        "Opening Scene"
+    )
+
     # Create Character DNA
     bipo = CharacterDNA(
         name="Bipo",
@@ -55,9 +60,15 @@ def main():
     # Load Character
     character_agent.add_character(bipo)
 
-    print("\nCurrent Project")
-    print("----------------")
+    print("\nProject")
+    print("-------")
     print(project)
+
+    print("\nScenes")
+    print("------")
+
+    for index, scene in enumerate(project.scenes, start=1):
+        print(f"{index}. {scene.name}")
 
 
 if __name__ == "__main__":
