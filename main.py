@@ -1,9 +1,9 @@
 from kernel.animation_kernel import AnimationKernel
+from kernel.animation_kernel import AnimationKernel
 
 from agents.director.director_agent import DirectorAgent
 from agents.project.project_agent import ProjectAgent
 from agents.character.character_agent import CharacterAgent
-
 from core.character_dna import CharacterDNA
 
 
@@ -38,7 +38,7 @@ def main():
         fps=24
     )
 
-    # Create First Scene
+    # Create Scene
     opening_scene = project_agent.create_scene(
         "Opening Scene"
     )
@@ -60,6 +60,28 @@ def main():
     # Load Character
     character_agent.add_character(bipo)
 
+    # Add Keyframes
+    project_agent.add_keyframe(
+        opening_scene,
+        frame_number=1,
+        image_path="assets/keyframes/frame_0001.png",
+        description="Bipo standing"
+    )
+
+    project_agent.add_keyframe(
+        opening_scene,
+        frame_number=12,
+        image_path="assets/keyframes/frame_0012.png",
+        description="Bipo jumps"
+    )
+
+    project_agent.add_keyframe(
+        opening_scene,
+        frame_number=24,
+        image_path="assets/keyframes/frame_0024.png",
+        description="Bipo lands"
+    )
+
     print("\nProject")
     print("-------")
     print(project)
@@ -67,8 +89,15 @@ def main():
     print("\nScenes")
     print("------")
 
-    for index, scene in enumerate(project.scenes, start=1):
-        print(f"{index}. {scene.name}")
+    for scene in project.scenes:
+        print(f"\nScene: {scene.name}")
+
+        for keyframe in scene.keyframes:
+            print(
+                f"Frame {keyframe.frame_number} | "
+                f"{keyframe.description} | "
+                f"{keyframe.image_path}"
+            )
 
 
 if __name__ == "__main__":
