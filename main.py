@@ -4,6 +4,7 @@ from agents.director.director_agent import DirectorAgent
 from agents.project.project_agent import ProjectAgent
 from agents.character.character_agent import CharacterAgent
 from agents.vision.vision_agent import VisionAgent
+from agents.reference.reference_agent import ReferenceAgent
 
 from providers.mock_vision_provider import MockVisionProvider
 
@@ -13,31 +14,31 @@ from core.character_dna import CharacterDNA
 def main():
     print("=" * 50)
     print("      INBETWEENER AI")
-    print("         Day 9")
+    print("        Day 10")
     print("=" * 50)
 
-    # Create Kernel
+    # Kernel
     kernel = AnimationKernel()
 
-    # Create AI Provider
+    # Providers
     vision_provider = MockVisionProvider()
 
-    # Create Agents
+    # Agents
     director = DirectorAgent()
     project_agent = ProjectAgent()
     character_agent = CharacterAgent()
     vision_agent = VisionAgent(vision_provider)
+    reference_agent = ReferenceAgent()
 
     # Register Agents
     kernel.register_agent(director)
     kernel.register_agent(project_agent)
     kernel.register_agent(character_agent)
     kernel.register_agent(vision_agent)
+    kernel.register_agent(reference_agent)
 
-    # Display Registered Agents
     kernel.list_agents()
 
-    # Start System
     kernel.start()
 
     # Create Project
@@ -51,7 +52,7 @@ def main():
         "Opening Scene"
     )
 
-    # Create Character DNA
+    # Character
     bipo = CharacterDNA(
         name="Bipo",
         head_shape="Circle",
@@ -65,10 +66,9 @@ def main():
         ]
     )
 
-    # Register Character
     character_agent.add_character(bipo)
 
-    # Add Keyframes
+    # Keyframes
     project_agent.add_keyframe(
         opening_scene,
         frame_number=1,
@@ -90,49 +90,49 @@ def main():
         description="Landing"
     )
 
+    # Analyze First Keyframe
     print("\nAnalyzing First Keyframe...")
     print("---------------------------")
 
-    result = vision_agent.analyze_keyframe(
+    keyframe_result = vision_agent.analyze_keyframe(
         opening_scene.keyframes[0].image_path
     )
 
-    print("\n=== AI Analysis ===")
+    print("\nVision Result")
+    print("-------------")
 
-    print(f"Character        : {result.character_name}")
-    print(f"Pose             : {result.pose}")
-    print(f"Expression       : {result.facial_expression}")
-    print(f"Camera           : {result.camera_angle}")
-    print(f"Movement         : {result.movement_direction}")
-    print(f"Confidence       : {result.confidence}")
+    print(f"Character : {keyframe_result.character_name}")
+    print(f"Pose      : {keyframe_result.pose}")
+    print(f"Expression: {keyframe_result.facial_expression}")
 
-    print("\nAnimator Analysis")
-    print("-----------------")
+    # Analyze Reference Animation
+    print("\nAnalyzing Reference Animation...")
+    print("-------------------------------")
 
-    print(f"Line of Action   : {result.line_of_action}")
-    print(f"Balance          : {result.balance}")
-    print(f"Silhouette       : {result.silhouette}")
-    print(f"Squash/Stretch   : {result.squash_stretch}")
-    print(f"Anticipation     : {result.anticipation}")
-    print(f"Follow Through   : {result.follow_through}")
-    print(f"Appeal           : {result.appeal}")
-    print(f"Staging          : {result.staging}")
+    reference = reference_agent.analyze_reference(
+        source="Reference Jump Animation",
+        total_frames=48,
+        fps=24
+    )
+
+    print("\nReference Analysis")
+    print("------------------")
+
+    print(f"Source : {reference.source}")
+    print(f"Frames : {reference.total_frames}")
+    print(f"FPS    : {reference.fps}")
+
+    print("\nAnimation Principles")
+
+    for principle in reference.animation_principles:
+        print(f"- {principle}")
 
     print("\nObservations")
-    print("------------")
 
-    for observation in result.observations:
+    for observation in reference.observations:
         print(f"- {observation}")
 
-    print("\nProject Summary")
-    print("---------------")
-    print(f"Project : {project.name}")
-    print(f"FPS     : {project.fps}")
-    print(f"Scenes  : {len(project.scenes)}")
-    print(f"Current : {opening_scene.name}")
-    print(f"Frames  : {len(opening_scene.keyframes)}")
-
-    print("8\nDay 9 Complete!")
+    print("\nDay 10 Part 2 Complete!")
 
 
 if __name__ == "__main__":
