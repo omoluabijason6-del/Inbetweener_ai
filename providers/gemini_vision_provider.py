@@ -1,68 +1,68 @@
 import json
+import os
 from pathlib import Path
 
 from google import genai
+from google.genai import types
 
 from core.analysis_result import AnalysisResult
 from core.vision_provider import VisionProvider
+from core.animator_prompt import ANIMATOR_PROMPT
 
 
 class GeminiVisionProvider(VisionProvider):
     """
-    Google Gemini Vision Provider.
+    Uses Google Gemini to analyze
+    animation keyframes.
     """
 
     def __init__(self):
-        self.client = genai.Client()
-        self.model = "gemini-2.5-flash"
+        api_key = os.getenv("GEMINI_API_KEY")
+
+        if not api_key:
+            raise ValueError(
+                "GEMINI_API_KEY environment variable not found."
+            )
+
+        self.client = genai.Client(api_key=api_key)
+        self.model = "gemini-3.6-flash"
 
     def analyze(self, image_path: str) -> AnalysisResult:
 
-        print("[Gemini] Analyzing image...")
+        print("[Gemini] Sending image for analysis...")
 
         image_bytes = Path(image_path).read_bytes()
 
-        prompt = """
-You are an expert 2D animation supervisor.
-
-Analyze this hand-drawn animation keyframe.
-
-Return ONLY valid JSON with these fields:
-
-{
-  "character_name": "",
-  "pose": "",
-  "facial_expression": "",
-  "camera_angle": "",
-  "movement_direction": "",
-  "confidence": 0.0,
-  "line_of_action": "",
-  "balance": "",
-  "silhouette": "",
-  "squash_stretch": "",
-  "anticipation": "",
-  "follow_through": "",
-  "appeal": "",
-  "staging": "",
-  "observations": []
-}
-"""
+        prompt = ANIMATOR_PROMPT
 
         response = self.client.models.generate_content(
             model=self.model,
             contents=[
-                {
-                    "text": prompt
-                },
-                {
-                    "inline_data": {
-                        "mime_type": "image/png",
-                        "data": image_bytes
-                    }
-                }
+                prompt,
+                types.Part.from_bytes(
+                    data=image_bytes,
+                    mime_type="image/png"
+                )
             ]
         )
 
-        data = json.loads(response.text)
+        text = response.text.strip()
+
+        if text.startswith("```"):
+            text = text.replace("```json", "")
+            text = text.replace("```", "")
+            text = text.strip()
+        print("\n===== GEMINI RAW RESPONSE =====")
+        print(text)
+        print("===== END RESPONSE =====\n")
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            print("Gemini did not return valid JSON.")
+            print(text)
+            return AnalysisResult(
+            pose="Unknown",
+            expression="Unknown"
+    )
 
         return AnalysisResult(**data)

@@ -4,56 +4,42 @@ from dataclasses import dataclass, field
 @dataclass
 class AnalysisResult:
     """
-    Stores everything the AI learns
-    from one keyframe.
-    """
-
-    character_name: str
-
-    pose: str
-
-    facial_expression: str
-
-    camera_angle: str
-
-    movement_direction: str
-
-    confidence: float
-
-    # Animator's Eye
-
-    line_of_action: str
-
-    balance: str
-
-    silhouette: str
-
-    squash_stretch: str
-
-    anticipation: str
-
-    follow_through: str
-
-    appeal: str
-
-    staging: str
-
-    observations: list = field(default_factory=list)
-    """
     Stores everything the Vision Agent learns
-    from one keyframe.
+    from one animation keyframe.
     """
 
-    character_name: str
+    pose: str = ""
+    expression: str = ""
 
-    pose: str
+    head_rotation: str = ""
+    torso_rotation: str = ""
 
-    facial_expression: str
+    left_arm: str = ""
+    right_arm: str = ""
 
-    camera_angle: str
+    left_leg: str = ""
+    right_leg: str = ""
 
-    movement_direction: str
+    weight_distribution: str = ""
+    center_of_gravity: str = ""
 
-    confidence: float
+    balance: str = ""
+    line_of_action: str = ""
 
-    observations: list = field(default_factory=list)
+    silhouette: str = ""
+
+    anticipation: str = ""
+    squash_stretch: str = ""
+    follow_through: str = ""
+
+    appeal: str = ""
+    staging: str = ""
+
+    camera_angle: str = ""
+    movement_direction: str = ""
+
+    strengths: list = field(default_factory=list)
+    weaknesses: list = field(default_factory=list)
+    suggestions: list = field(default_factory=list)
+
+    animation_score: int = 0

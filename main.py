@@ -92,7 +92,7 @@ def main():
     )
 
     print(f"Pose: {vision_result.pose}")
-    print(f"Expression: {vision_result.facial_expression}")
+    print(f"Expression: {vision_result.expression}")
 
     # Reference Analysis
     print("\nAnalyzing Reference Animation...")
