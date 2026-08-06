@@ -5,6 +5,7 @@ from agents.project.project_agent import ProjectAgent
 from agents.character.character_agent import CharacterAgent
 from agents.vision.vision_agent import VisionAgent
 from agents.reference.reference_agent import ReferenceAgent
+from agents.motion.motion_agent import MotionAgent
 
 from providers.mock_vision_provider import MockVisionProvider
 
@@ -14,13 +15,13 @@ from core.character_dna import CharacterDNA
 def main():
     print("=" * 50)
     print("      INBETWEENER AI")
-    print("        Day 10")
+    print("        Day 11")
     print("=" * 50)
 
     # Kernel
     kernel = AnimationKernel()
 
-    # Providers
+    # Provider
     vision_provider = MockVisionProvider()
 
     # Agents
@@ -29,6 +30,7 @@ def main():
     character_agent = CharacterAgent()
     vision_agent = VisionAgent(vision_provider)
     reference_agent = ReferenceAgent()
+    motion_agent = MotionAgent()
 
     # Register Agents
     kernel.register_agent(director)
@@ -36,18 +38,18 @@ def main():
     kernel.register_agent(character_agent)
     kernel.register_agent(vision_agent)
     kernel.register_agent(reference_agent)
+    kernel.register_agent(motion_agent)
 
     kernel.list_agents()
-
     kernel.start()
 
-    # Create Project
+    # Project
     project = project_agent.create_project(
-        name="Bipo Episode 1",
+        "Bipo Episode 1",
         fps=24
     )
 
-    # Create Scene
+    # Scene
     opening_scene = project_agent.create_scene(
         "Opening Scene"
     )
@@ -69,45 +71,31 @@ def main():
     character_agent.add_character(bipo)
 
     # Keyframes
-    project_agent.add_keyframe(
+    keyframe1 = project_agent.add_keyframe(
         opening_scene,
         frame_number=1,
         image_path="assets/keyframes/frame_0001.png",
         description="Standing"
     )
 
-    project_agent.add_keyframe(
-        opening_scene,
-        frame_number=12,
-        image_path="assets/keyframes/frame_0012.png",
-        description="Jump"
-    )
-
-    project_agent.add_keyframe(
+    keyframe2 = project_agent.add_keyframe(
         opening_scene,
         frame_number=24,
         image_path="assets/keyframes/frame_0024.png",
         description="Landing"
     )
 
-    # Analyze First Keyframe
+    # Vision Analysis
     print("\nAnalyzing First Keyframe...")
-    print("---------------------------")
-
-    keyframe_result = vision_agent.analyze_keyframe(
-        opening_scene.keyframes[0].image_path
+    vision_result = vision_agent.analyze_keyframe(
+        keyframe1.image_path
     )
 
-    print("\nVision Result")
-    print("-------------")
+    print(f"Pose: {vision_result.pose}")
+    print(f"Expression: {vision_result.facial_expression}")
 
-    print(f"Character : {keyframe_result.character_name}")
-    print(f"Pose      : {keyframe_result.pose}")
-    print(f"Expression: {keyframe_result.facial_expression}")
-
-    # Analyze Reference Animation
+    # Reference Analysis
     print("\nAnalyzing Reference Animation...")
-    print("-------------------------------")
 
     reference = reference_agent.analyze_reference(
         source="Reference Jump Animation",
@@ -115,24 +103,50 @@ def main():
         fps=24
     )
 
-    print("\nReference Analysis")
-    print("------------------")
+    print(f"Reference: {reference.source}")
 
-    print(f"Source : {reference.source}")
-    print(f"Frames : {reference.total_frames}")
-    print(f"FPS    : {reference.fps}")
+    # Motion Planning
+    print("\nCreating Motion Blueprint...")
+    print("----------------------------")
 
-    print("\nAnimation Principles")
+    motion_plan = motion_agent.create_motion_plan(
+        keyframe1,
+        keyframe2,
+        reference
+    )
 
-    for principle in reference.animation_principles:
-        print(f"- {principle}")
+    print("\n=== Motion Blueprint ===")
 
-    print("\nObservations")
+    print(f"Start Frame      : {motion_plan.start_frame}")
+    print(f"End Frame        : {motion_plan.end_frame}")
+    print(f"In-betweens      : {motion_plan.total_inbetweens}")
+    print(f"Motion Type      : {motion_plan.motion_type}")
+    print(f"Timing           : {motion_plan.timing}")
+    print(f"Spacing          : {motion_plan.spacing}")
+    print(f"Arc              : {motion_plan.arc}")
 
-    for observation in reference.observations:
-        print(f"- {observation}")
+    print("\nMotion Notes")
 
-    print("\nDay 10 Part 2 Complete!")
+    for note in motion_plan.notes:
+        print(f"- {note}")
+
+    print("\nPipeline Complete!")
+
+    print("""
+Keyframes
+     │
+     ▼
+Vision Agent
+     │
+     ▼
+Reference Agent
+     │
+     ▼
+Motion Agent
+     │
+     ▼
+Motion Blueprint
+""")
 
 
 if __name__ == "__main__":
