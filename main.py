@@ -34,7 +34,7 @@ def main():
     kernel.register_agent(character_agent)
     kernel.register_agent(vision_agent)
 
-    # Display Agents
+    # Display Registered Agents
     kernel.list_agents()
 
     # Start System
@@ -42,7 +42,7 @@ def main():
 
     # Create Project
     project = project_agent.create_project(
-        "Bipo Episode 1",
+        name="Bipo Episode 1",
         fps=24
     )
 
@@ -51,7 +51,7 @@ def main():
         "Opening Scene"
     )
 
-    # Create Character
+    # Create Character DNA
     bipo = CharacterDNA(
         name="Bipo",
         head_shape="Circle",
@@ -65,28 +65,29 @@ def main():
         ]
     )
 
+    # Register Character
     character_agent.add_character(bipo)
 
     # Add Keyframes
     project_agent.add_keyframe(
         opening_scene,
-        1,
-        "assets/keyframes/frame_0001.png",
-        "Standing"
+        frame_number=1,
+        image_path="assets/keyframes/frame_0001.png",
+        description="Standing"
     )
 
     project_agent.add_keyframe(
         opening_scene,
-        12,
-        "assets/keyframes/frame_0012.png",
-        "Jump"
+        frame_number=12,
+        image_path="assets/keyframes/frame_0012.png",
+        description="Jump"
     )
 
     project_agent.add_keyframe(
         opening_scene,
-        24,
-        "assets/keyframes/frame_0024.png",
-        "Landing"
+        frame_number=24,
+        image_path="assets/keyframes/frame_0024.png",
+        description="Landing"
     )
 
     print("\nAnalyzing First Keyframe...")
@@ -97,17 +98,41 @@ def main():
     )
 
     print("\n=== AI Analysis ===")
-    print(f"Character : {result.character_name}")
-    print(f"Pose      : {result.pose}")
-    print(f"Expression: {result.facial_expression}")
-    print(f"Camera    : {result.camera_angle}")
-    print(f"Movement  : {result.movement_direction}")
-    print(f"Confidence: {result.confidence}")
+
+    print(f"Character        : {result.character_name}")
+    print(f"Pose             : {result.pose}")
+    print(f"Expression       : {result.facial_expression}")
+    print(f"Camera           : {result.camera_angle}")
+    print(f"Movement         : {result.movement_direction}")
+    print(f"Confidence       : {result.confidence}")
+
+    print("\nAnimator Analysis")
+    print("-----------------")
+
+    print(f"Line of Action   : {result.line_of_action}")
+    print(f"Balance          : {result.balance}")
+    print(f"Silhouette       : {result.silhouette}")
+    print(f"Squash/Stretch   : {result.squash_stretch}")
+    print(f"Anticipation     : {result.anticipation}")
+    print(f"Follow Through   : {result.follow_through}")
+    print(f"Appeal           : {result.appeal}")
+    print(f"Staging          : {result.staging}")
 
     print("\nObservations")
+    print("------------")
 
     for observation in result.observations:
         print(f"- {observation}")
+
+    print("\nProject Summary")
+    print("---------------")
+    print(f"Project : {project.name}")
+    print(f"FPS     : {project.fps}")
+    print(f"Scenes  : {len(project.scenes)}")
+    print(f"Current : {opening_scene.name}")
+    print(f"Frames  : {len(opening_scene.keyframes)}")
+
+    print("8\nDay 9 Complete!")
 
 
 if __name__ == "__main__":
