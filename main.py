@@ -7,7 +7,7 @@ from agents.vision.vision_agent import VisionAgent
 from agents.reference.reference_agent import ReferenceAgent
 from agents.motion.motion_agent import MotionAgent
 
-from providers.mock_vision_provider import MockVisionProvider
+from providers.gemini_vision_provider import GeminiVisionProvider
 
 from core.character_dna import CharacterDNA
 
@@ -22,7 +22,7 @@ def main():
     kernel = AnimationKernel()
 
     # Provider
-    vision_provider = MockVisionProvider()
+    vision_provider = GeminiVisionProvider()
 
     # Agents
     director = DirectorAgent()
